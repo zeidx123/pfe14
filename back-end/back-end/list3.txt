@@ -1,0 +1,4 @@
+NAME              ID              SIZE      MODIFIED           
+llava:latest      8dd30f6b0cb1    4.7 GB    About a minute ago    
+mistral:latest    6577803aa9a0    4.4 GB    7 hours ago           
+qwen2.5:0.5b      a8b0c5157701    397 MB    19 hours ago          

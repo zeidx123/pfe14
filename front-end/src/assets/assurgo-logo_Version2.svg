@@ -1,0 +1,23 @@
+<svg width="560" height="170" viewBox="0 0 560 170" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Icon -->
+  <g transform="translate(24,18)">
+    <!-- Shield base (green) -->
+        <path d="M64 8C84 20 104 22 124 22V70C124 104 99 129 64 142C29 129 4 104 4 70V22C24 22 44 20 64 8Z"
+          fill="#00cccc"/>
+    <!-- Blue accent swoosh -->
+    <path d="M18 62C34 49 52 42 72 40C94 38 112 44 124 54V70C124 104 99 129 64 142C41 134 24 120 14 103C28 109 44 112 60 110C89 106 109 86 110 62C110 60 110 58 110 56C97 48 83 45 67 46C49 47 33 54 18 62Z"
+          fill="#1D4ED8" opacity="0.18"/>
+    <!-- Check (blue) -->
+    <path d="M42 72L57 87L88 55" stroke="#1D4ED8" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Wordmark -->
+  <g transform="translate(175,52)">
+    <text x="0" y="46" font-family="Inter, Poppins, Arial, sans-serif" font-size="52" font-weight="800" fill="#0F172A">
+      Assur<tspan fill="#00cccc">Go</tspan>
+    </text>
+    <text x="2" y="80" font-family="Inter, Poppins, Arial, sans-serif" font-size="16" font-weight="600" fill="#64748B">
+      Simple • Rapide • Fiable
+    </text>
+  </g>
+</svg>

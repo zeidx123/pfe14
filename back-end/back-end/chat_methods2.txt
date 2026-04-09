@@ -1,0 +1,10 @@
+Compiled from "ChatLanguageModel.java"
+public interface dev.langchain4j.model.chat.ChatLanguageModel {
+  public default java.lang.String generate(java.lang.String);
+  public default dev.langchain4j.model.output.Response<dev.langchain4j.data.message.AiMessage> generate(dev.langchain4j.data.message.ChatMessage...);
+  public abstract dev.langchain4j.model.output.Response<dev.langchain4j.data.message.AiMessage> generate(java.util.List<dev.langchain4j.data.message.ChatMessage>);
+  public default dev.langchain4j.model.output.Response<dev.langchain4j.data.message.AiMessage> generate(java.util.List<dev.langchain4j.data.message.ChatMessage>, java.util.List<dev.langchain4j.agent.tool.ToolSpecification>);
+  public default dev.langchain4j.model.output.Response<dev.langchain4j.data.message.AiMessage> generate(java.util.List<dev.langchain4j.data.message.ChatMessage>, dev.langchain4j.agent.tool.ToolSpecification);
+  public default dev.langchain4j.model.chat.response.ChatResponse chat(dev.langchain4j.model.chat.request.ChatRequest);
+  public default java.util.Set<dev.langchain4j.model.chat.Capability> supportedCapabilities();
+}

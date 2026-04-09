@@ -1,0 +1,41 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< com.example:back-end >------------------------
+[INFO] Building back-end 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ back-end ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ back-end ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 50 source files with javac [debug parameters release 21] to target\classes
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /C:/appassur4/back-end/back-end/src/main/java/com/example/back_end/config/RagConfig.java:[11,56] package dev.langchain4j.model.embedding.bge.small.en.v15 does not exist
+[ERROR] /C:/appassur4/back-end/back-end/src/main/java/com/example/back_end/config/RagConfig.java:[27,20] cannot find symbol
+  symbol:   class BgeSmallEnV15QuantizedEmbeddingModel
+  location: class com.example.back_end.config.RagConfig
+[INFO] 2 errors 
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.973 s
+[INFO] Finished at: 2026-03-18T05:25:44+01:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.14.1:compile (default-compile) on project back-end: Compilation failure: Compilation failure: 
+[ERROR] /C:/appassur4/back-end/back-end/src/main/java/com/example/back_end/config/RagConfig.java:[11,56] package dev.langchain4j.model.embedding.bge.small.en.v15 does not exist
+[ERROR] /C:/appassur4/back-end/back-end/src/main/java/com/example/back_end/config/RagConfig.java:[27,20] cannot find symbol
+[ERROR]   symbol:   class BgeSmallEnV15QuantizedEmbeddingModel
+[ERROR]   location: class com.example.back_end.config.RagConfig
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
