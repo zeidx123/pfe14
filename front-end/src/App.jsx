@@ -176,7 +176,7 @@ export default function App() {
   }, [isAuthenticated, token, userRole])
 
   useEffect(() => {
-    if (!isAuthenticated || !token || !userId || userRole === 'ADMIN' || userRole === 'AGENT') {
+    if (!isAuthenticated || !token || !userId) {
       setChatUnreadCount(0)
       return
     }
@@ -215,9 +215,9 @@ export default function App() {
       connectHeaders: { Authorization: `Bearer ${token}` },
       onConnect: () => {
         client.subscribe(`/user/${userId}/queue/messages`, (frame) => {
-          const incomingMsg = JSON.parse(frame.body);
-          if (!cancelled) {
-            const exists = currentMessages.some(m => m.id === incomingMsg.id);
+          const incomingMsg = typeof frame.body === 'string' ? JSON.parse(frame.body) : frame.body;
+          if (!cancelled && incomingMsg && incomingMsg.id) {
+            const exists = currentMessages.some(m => String(m.id) === String(incomingMsg.id));
             if (!exists) {
               currentMessages = [...currentMessages, incomingMsg];
               updateUnread(currentMessages);

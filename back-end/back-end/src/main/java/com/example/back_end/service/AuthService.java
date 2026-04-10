@@ -53,7 +53,7 @@ public class AuthService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
         }
 
-        String token = jwtService.generateToken(admin.getEmail(), admin.getRole());
+        String token = jwtService.generateToken(admin.getEmail(), admin.getRole(), admin.getId());
         return new LoginResponse(token, admin.getId(), admin.getRole(), "Administrateur principal");
     }
 
@@ -129,7 +129,7 @@ public class AuthService {
             utilisateurRepository.save(utilisateur);
         }
 
-        String token = jwtService.generateToken(utilisateur.getEmail(), utilisateur.getRole());
+        String token = jwtService.generateToken(utilisateur.getEmail(), utilisateur.getRole(), utilisateur.getId());
         return new LoginResponse(token, utilisateur.getId(), utilisateur.getRole(), utilisateur.getNom());
     }
 

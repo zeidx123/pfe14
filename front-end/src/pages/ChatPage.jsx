@@ -16,6 +16,7 @@ const ChatPage = ({ targetRoleFilter, onUnreadCountChange }) => {
     const [newMessage, setNewMessage] = useState('');
     const [loading, setLoading] = useState(true);
     const [connected, setConnected] = useState(false);
+    const [lastSeenUpdate, setLastSeenUpdate] = useState(Date.now());
 
     const userId = useMemo(() => localStorage.getItem('userId'), []);
     const userRole = useMemo(() => localStorage.getItem('userRole'), []);
@@ -43,21 +44,22 @@ const ChatPage = ({ targetRoleFilter, onUnreadCountChange }) => {
         const client = new Client({
             webSocketFactory: () => new SockJS('/ws', null, { transports: ['websocket'] }),
             reconnectDelay: 5000,
+            connectHeaders: { Authorization: `Bearer ${token}` },
             onConnect: () => {
                 setConnected(true);
-                client.subscribe(`/user/${userId}/queue/messages`, (frame) => {
+                client.subscribe('/user/queue/messages', (frame) => {
                     const incomingMsg = JSON.parse(frame.body);
                     const partner = selectedPartnerRef.current;
 
-                    if (partner && (incomingMsg.senderId === partner.id || incomingMsg.receiverId === partner.id)) {
+                    if (partner && (String(incomingMsg.senderId) === String(partner.id) || String(incomingMsg.receiverId) === String(partner.id))) {
                         setMessages(prev => {
-                            if (prev.some(m => m.id === incomingMsg.id)) return prev;
+                            if (prev.some(m => String(m.id) === String(incomingMsg.id))) return prev;
                             return [...prev, incomingMsg];
                         });
                     }
 
                     setAllMessages(prev => {
-                        if (prev.some(m => m.id === incomingMsg.id)) return prev;
+                        if (prev.some(m => String(m.id) === String(incomingMsg.id))) return prev;
                         return [...prev, incomingMsg];
                     });
                 });
@@ -154,6 +156,7 @@ const ChatPage = ({ targetRoleFilter, onUnreadCountChange }) => {
         if (!selectedPartner || !messages.length) return;
         const last = messages[messages.length - 1];
         markConversationAsSeen(userId, selectedPartner.id, last?.createdAt);
+        setLastSeenUpdate(Date.now()); // Trigger unread recalculation
     }, [messages, selectedPartner, userId]);
 
     useEffect(() => {
@@ -162,7 +165,7 @@ const ChatPage = ({ targetRoleFilter, onUnreadCountChange }) => {
         if (typeof onUnreadCountChange === 'function') {
             onUnreadCountChange(total);
         }
-    }, [allMessages, userId, JSON.stringify(targetRoleFilter), onUnreadCountChange]);
+    }, [allMessages, userId, JSON.stringify(targetRoleFilter), onUnreadCountChange, lastSeenUpdate]);
 
     useEffect(() => {
         scrollToBottom();
@@ -250,7 +253,7 @@ const ChatPage = ({ targetRoleFilter, onUnreadCountChange }) => {
                         </div>
                         <div className="messages-display">
                             {messages.map((msg, index) => (
-                                <div key={msg.id || index} className={`message-wrapper ${msg.senderId === userId ? 'sent' : 'received'}`}>
+                                <div key={msg.id || index} className={`message-wrapper ${String(msg.senderId) === String(userId) ? 'sent' : 'received'}`}>
                                     <div className="message-content">
                                         <p>{msg.content}</p>
                                         <span className="message-time">

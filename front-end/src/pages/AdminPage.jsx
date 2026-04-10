@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import ChatPage from './ChatPage'
 import { Client } from '@stomp/stompjs'
 import SockJS from 'sockjs-client'
@@ -178,6 +178,10 @@ export default function AdminPage() {
   const [isGestionOpen, setIsGestionOpen] = useState(false)
   const [isConsultationOpen, setIsConsultationOpen] = useState(false)
 
+  const currentMessagesRef = useRef([])
+  const currentUserId = localStorage.getItem('userId')
+  const token = localStorage.getItem('token')
+
 
 
   const [contratForm, setContratForm] = useState(emptyContratForm)
@@ -207,74 +211,69 @@ export default function AdminPage() {
   const [isThreadOpen, setIsThreadOpen] = useState(false)
 
   const getAuthHeaders = () => {
-    const token = localStorage.getItem('token')
     return {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
     }
   }
 
-  useEffect(() => {
-    const currentUserId = localStorage.getItem('userId')
-    const token = localStorage.getItem('token')
+  const updateUnread = useCallback((data) => {
+    const unreadStats = getUnreadStatsByPartner(data, currentUserId)
+    setChatUnreadCount(getUnreadTotal(unreadStats))
+  }, [currentUserId])
 
+  const loadUnread = useCallback(async () => {
+    if (!currentUserId || !token) return
+    try {
+      const response = await fetch(`/api/chat/all-my-messages/${currentUserId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      if (!response.ok) return
+      const data = await response.json()
+      currentMessagesRef.current = Array.isArray(data) ? data : []
+      updateUnread(currentMessagesRef.current)
+    } catch (err) {
+      console.error('Error loading unread:', err)
+      setChatUnreadCount(0)
+    }
+  }, [currentUserId, token, updateUnread])
+
+  useEffect(() => {
     if (!currentUserId || !token) {
       setChatUnreadCount(0)
       return
     }
 
-    let cancelled = false
-    let currentMessages = []
-
-    const updateUnread = (data) => {
-      const unreadStats = getUnreadStatsByPartner(data, currentUserId)
-      setChatUnreadCount(getUnreadTotal(unreadStats))
-    }
-
-    const loadUnread = async () => {
-      try {
-        const response = await fetch(`/api/chat/all-my-messages/${currentUserId}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        })
-
-        if (!response.ok) return
-
-        const data = await response.json()
-        if (!cancelled) {
-          currentMessages = Array.isArray(data) ? data : []
-          updateUnread(currentMessages)
-        }
-      } catch {
-        if (!cancelled) setChatUnreadCount(0)
-      }
-    }
-
     loadUnread()
+    window.refreshAdminUnread = () => loadUnread();
+
+    let cancelled = false
 
     const client = new Client({
       webSocketFactory: () => new SockJS('/ws', null, { transports: ['websocket'] }),
       reconnectDelay: 5000,
       connectHeaders: { Authorization: `Bearer ${token}` },
       onConnect: () => {
-        client.subscribe(`/user/${currentUserId}/queue/messages`, (frame) => {
+        client.subscribe('/user/queue/messages', (frame) => {
           const incomingMsg = JSON.parse(frame.body);
           if (!cancelled) {
-            const exists = currentMessages.some(m => m.id === incomingMsg.id);
+            const exists = currentMessagesRef.current.some(m => String(m.id) === String(incomingMsg.id));
             if (!exists) {
-              currentMessages = [...currentMessages, incomingMsg];
-              updateUnread(currentMessages);
+              currentMessagesRef.current = [...currentMessagesRef.current, incomingMsg];
+              updateUnread(currentMessagesRef.current);
             }
           }
         });
       }
     });
+
     client.activate();
 
     return () => {
       cancelled = true
       client.deactivate()
     }
-  }, [])
+  }, [currentUserId, token, loadUnread, updateUnread])
 
   const loadData = async () => {
     try {
@@ -1407,7 +1406,7 @@ export default function AdminPage() {
 
           {activeAdminSection === 'messages' ? (
             <div style={{ marginTop: '20px' }}>
-              <ChatPage />
+              <ChatPage targetRoleFilter={['AGENT']} onUnreadCountChange={() => loadUnread()} />
             </div>
           ) : null}
 

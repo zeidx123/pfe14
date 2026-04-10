@@ -22,22 +22,27 @@ public class JwtService {
     @Value("${jwt.expiration-ms:86400000}")
     private long expirationMs;
 
-    public String generateToken(String email, String role) {
+    public String generateToken(String email, String role, String userId) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", role);
+        claims.put("userId", userId);
 
         Instant now = Instant.now();
         return Jwts.builder()
-            .setClaims(claims)
-            .setSubject(email)
-            .setIssuedAt(Date.from(now))
-            .setExpiration(Date.from(now.plusMillis(expirationMs)))
+                .setClaims(claims)
+                .setSubject(email)
+                .setIssuedAt(Date.from(now))
+                .setExpiration(Date.from(now.plusMillis(expirationMs)))
                 .signWith(getSignInKey())
                 .compact();
     }
 
     public String extractUsername(String token) {
         return extractAllClaims(token).getSubject();
+    }
+
+    public String extractUserId(String token) {
+        return extractAllClaims(token).get("userId", String.class);
     }
 
     public String extractRole(String token) {
@@ -52,10 +57,10 @@ public class JwtService {
 
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
-            .setSigningKey(getSignInKey())
-            .build()
-            .parseClaimsJws(token)
-            .getBody();
+                .setSigningKey(getSignInKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     private SecretKey getSignInKey() {

@@ -8,6 +8,7 @@ import com.example.back_end.repository.AgenceRepository;
 import com.example.back_end.service.ContratReferenceService;
 import com.example.back_end.service.UtilisateurService;
 import com.example.back_end.util.PhoneNumberValidator;
+import com.example.back_end.security.JwtService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -26,13 +27,16 @@ public class AgentController {
     private final AgenceRepository agenceRepository;
     private final ContratReferenceService contratReferenceService;
     private final UtilisateurService utilisateurService;
+    private final JwtService jwtService;
 
     public AgentController(AgenceRepository agenceRepository,
-                           ContratReferenceService contratReferenceService,
-                           UtilisateurService utilisateurService) {
+            ContratReferenceService contratReferenceService,
+            UtilisateurService utilisateurService,
+            JwtService jwtService) {
         this.agenceRepository = agenceRepository;
         this.contratReferenceService = contratReferenceService;
         this.utilisateurService = utilisateurService;
+        this.jwtService = jwtService;
     }
 
     // ─── Login ────────────────────────────────────────────────────────────────
@@ -49,7 +53,7 @@ public class AgentController {
         Optional<Agence> found = agenceRepository.findAll()
                 .stream()
                 .filter(a -> email.equalsIgnoreCase(a.getEmailSotadmin())
-                          && password.equals(a.getPassword()))
+                        && password.equals(a.getPassword()))
                 .findFirst();
 
         if (found.isEmpty()) {
@@ -58,10 +62,14 @@ public class AgentController {
 
         Agence agence = found.get();
         String nom = agence.getSotadmin() != null ? agence.getSotadmin() : agence.getNomAgence();
+
+        // Use real JWT token for Agent
+        String token = jwtService.generateToken(agence.getEmailSotadmin(), "AGENT", agence.getId());
+
         Map<String, Object> response = new HashMap<>();
-        response.put("token", "AGENT:" + agence.getId());
+        response.put("token", token);
         response.put("role", "AGENT");
-        response.put("id", agence.getId()); // Using ID for consistent chat logic
+        response.put("id", agence.getId());
         response.put("agenceId", agence.getId());
         response.put("nomAgence", agence.getNomAgence());
         response.put("nom", nom);
@@ -81,8 +89,10 @@ public class AgentController {
         Agence agence = agenceRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agence non trouvée"));
 
-        if (request.getNomAgence() != null) agence.setNomAgence(request.getNomAgence().trim());
-        if (request.getVille() != null) agence.setVille(request.getVille().trim());
+        if (request.getNomAgence() != null)
+            agence.setNomAgence(request.getNomAgence().trim());
+        if (request.getVille() != null)
+            agence.setVille(request.getVille().trim());
         agence.setAdresse(request.getAdresse());
         try {
             agence.setTelephone(PhoneNumberValidator.validateOrNull(request.getTelephone()));
@@ -91,7 +101,8 @@ public class AgentController {
         }
         agence.setHoraires(request.getHoraires());
         agence.setSotadmin(request.getSotadmin());
-        if (request.getEmailSotadmin() != null) agence.setEmailSotadmin(request.getEmailSotadmin());
+        if (request.getEmailSotadmin() != null)
+            agence.setEmailSotadmin(request.getEmailSotadmin());
         if (request.getPassword() != null && !request.getPassword().isBlank()) {
             agence.setPassword(request.getPassword());
         }
@@ -127,7 +138,8 @@ public class AgentController {
         contratReferenceService.delete(id);
     }
 
-    // ─── Utilisateurs (filtered by agent's agency name) ───────────────────────────
+    // ─── Utilisateurs (filtered by agent's agency name)
+    // ───────────────────────────
 
     @GetMapping("/utilisateurs/{agenceId}")
     public List<AdminUtilisateurResponse> getMyUsers(@PathVariable String agenceId) {
@@ -147,4 +159,3 @@ public class AgentController {
         utilisateurService.delete(id);
     }
 }
-

@@ -35,10 +35,10 @@ public class ChatMessageService {
     private final AdminRepository adminRepository;
 
     public ChatMessageService(ChatMessageRepository chatMessageRepository,
-                              AgenceRepository agenceRepository,
-                              UtilisateurRepository utilisateurRepository,
-                              ContratReferenceRepository contratReferenceRepository,
-                              AdminRepository adminRepository) {
+            AgenceRepository agenceRepository,
+            UtilisateurRepository utilisateurRepository,
+            ContratReferenceRepository contratReferenceRepository,
+            AdminRepository adminRepository) {
         this.chatMessageRepository = chatMessageRepository;
         this.agenceRepository = agenceRepository;
         this.utilisateurRepository = utilisateurRepository;
@@ -56,22 +56,25 @@ public class ChatMessageService {
         Set<String> partnerMailboxIds = resolveEquivalentMailboxIds(partnerId);
 
         return chatMessageRepository.findAll().stream()
-            .filter(m -> m != null && (
-                (userMailboxIds.contains(m.getSenderId()) && partnerMailboxIds.contains(m.getReceiverId()))
-                    ||
-                    (partnerMailboxIds.contains(m.getSenderId()) && userMailboxIds.contains(m.getReceiverId()))
-            ))
-            .sorted(Comparator.comparing(ChatMessage::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder())))
-            .collect(Collectors.toList());
+                .filter(m -> m != null
+                        && ((userMailboxIds.contains(m.getSenderId()) && partnerMailboxIds.contains(m.getReceiverId()))
+                                ||
+                                (partnerMailboxIds.contains(m.getSenderId())
+                                        && userMailboxIds.contains(m.getReceiverId()))))
+                .sorted(Comparator.comparing(ChatMessage::getCreatedAt,
+                        Comparator.nullsLast(Comparator.naturalOrder())))
+                .collect(Collectors.toList());
     }
 
     public List<ChatMessage> getAllMyMessages(String userId) {
         Set<String> mailboxIds = resolveEquivalentMailboxIds(userId);
 
         return chatMessageRepository.findAll().stream()
-            .filter(m -> m != null && (mailboxIds.contains(m.getSenderId()) || mailboxIds.contains(m.getReceiverId())))
-            .sorted(Comparator.comparing(ChatMessage::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder())))
-            .collect(Collectors.toList());
+                .filter(m -> m != null
+                        && (mailboxIds.contains(m.getSenderId()) || mailboxIds.contains(m.getReceiverId())))
+                .sorted(Comparator.comparing(ChatMessage::getCreatedAt,
+                        Comparator.nullsLast(Comparator.naturalOrder())))
+                .collect(Collectors.toList());
     }
 
     public List<Interlocutor> getInterlocutors(String userId, String role) {
@@ -80,22 +83,22 @@ public class ChatMessageService {
 
             // Admin sees all agencies (unique ids), ordered by latest message activity
             return agenceRepository.findAll().stream()
-                .filter(a -> a.getId() != null && !a.getId().isBlank())
-                .map(a -> new Interlocutor(
-                    a.getId(),
-                    (a.getNomAgence() != null && !a.getNomAgence().isBlank()) ? a.getNomAgence().trim() : "Agence",
-                    "AGENT"))
+                    .filter(a -> a.getId() != null && !a.getId().isBlank())
+                    .map(a -> new Interlocutor(
+                            a.getId(),
+                            (a.getNomAgence() != null && !a.getNomAgence().isBlank()) ? a.getNomAgence().trim()
+                                    : "Agence",
+                            "AGENT"))
                     .collect(Collectors.toMap(
-                        i -> i.name == null ? i.id : i.name.trim().toLowerCase(),
-                        i -> i,
-                        (left, right) -> left
-                    ))
-                .values().stream()
-                .sorted(Comparator
-                    .comparingLong((Interlocutor i) -> latestAgentActivity.getOrDefault(i.id, 0L))
-                    .reversed()
-                    .thenComparing(i -> i.name == null ? "" : i.name, String.CASE_INSENSITIVE_ORDER))
-                .collect(Collectors.toList());
+                            i -> i.name == null ? i.id : i.name.trim().toLowerCase(),
+                            i -> i,
+                            (left, right) -> left))
+                    .values().stream()
+                    .sorted(Comparator
+                            .comparingLong((Interlocutor i) -> latestAgentActivity.getOrDefault(i.id, 0L))
+                            .reversed()
+                            .thenComparing(i -> i.name == null ? "" : i.name, String.CASE_INSENSITIVE_ORDER))
+                    .collect(Collectors.toList());
         } else if ("AGENT".equalsIgnoreCase(role)) {
             // Agent sees all admins + their clients
             Agence agence = agenceRepository.findById(userId)
@@ -106,20 +109,20 @@ public class ChatMessageService {
 
             // Add all admins (not only first one), sorted by latest message activity.
             List<Interlocutor> admins = adminRepository.findAll().stream()
-                .filter(admin -> admin.getId() != null && !admin.getId().isBlank())
-                .map(admin -> new Interlocutor(
-                    admin.getId(),
-                    (admin.getEmail() != null && !admin.getEmail().isBlank())
-                        ? admin.getEmail().split("@")[0]
-                        : "Administrateur Principal",
-                    "ADMIN"))
-                .collect(Collectors.toMap(i -> i.id, i -> i, (left, right) -> left))
-                .values().stream()
-                .sorted(Comparator
-                    .comparingLong((Interlocutor i) -> latestAdminActivity.getOrDefault(i.id, 0L))
-                    .reversed()
-                    .thenComparing(i -> i.name == null ? "" : i.name, String.CASE_INSENSITIVE_ORDER))
-                .collect(Collectors.toList());
+                    .filter(admin -> admin.getId() != null && !admin.getId().isBlank())
+                    .map(admin -> new Interlocutor(
+                            admin.getId(),
+                            (admin.getEmail() != null && !admin.getEmail().isBlank())
+                                    ? admin.getEmail().split("@")[0]
+                                    : "Administrateur Principal",
+                            "ADMIN"))
+                    .collect(Collectors.toMap(i -> i.id, i -> i, (left, right) -> left))
+                    .values().stream()
+                    .sorted(Comparator
+                            .comparingLong((Interlocutor i) -> latestAdminActivity.getOrDefault(i.id, 0L))
+                            .reversed()
+                            .thenComparing(i -> i.name == null ? "" : i.name, String.CASE_INSENSITIVE_ORDER))
+                    .collect(Collectors.toList());
             result.addAll(admins);
 
             // Adding Clients that have a contract with this agency
@@ -132,11 +135,11 @@ public class ChatMessageService {
 
             if (!userCins.isEmpty()) {
                 utilisateurRepository.findByCinIn(userCins).stream()
-                .filter(u -> u.getId() != null && !u.getId().isBlank())
-                .map(u -> new Interlocutor(
-                    u.getId(),
-                    (u.getNom() != null && !u.getNom().isBlank()) ? u.getNom() : "Utilisateur",
-                    "UTILISATEUR"))
+                        .filter(u -> u.getId() != null && !u.getId().isBlank())
+                        .map(u -> new Interlocutor(
+                                u.getId(),
+                                (u.getNom() != null && !u.getNom().isBlank()) ? u.getNom() : "Utilisateur",
+                                "UTILISATEUR"))
                         .forEach(result::add);
             }
             return result;
@@ -144,13 +147,14 @@ public class ChatMessageService {
             // Client sees their agency's agent
             Utilisateur user = utilisateurRepository.findById(userId)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur not found"));
-            
-            List<ContratReference> contrats = contratReferenceRepository.findByCinOrderByDateFinContratDesc(user.getCin());
+
+            List<ContratReference> contrats = contratReferenceRepository
+                    .findByCinOrderByDateFinContratDesc(user.getCin());
             List<String> agenceNames = contrats.stream()
                     .map(ContratReference::getNomAgence)
                     .distinct()
                     .collect(Collectors.toList());
-                    
+
             return agenceRepository.findAll().stream()
                     .filter(a -> agenceNames.contains(a.getNomAgence()))
                     .map(a -> new Interlocutor(a.getId(), a.getNomAgence(), "AGENT"))
@@ -165,7 +169,8 @@ public class ChatMessageService {
         }
 
         Map<String, Long> latestByPartner = new HashMap<>();
-        List<ChatMessage> allMyMessages = chatMessageRepository.findBySenderIdOrReceiverIdOrderByCreatedAt(currentUserId, currentUserId);
+        List<ChatMessage> allMyMessages = chatMessageRepository
+                .findBySenderIdOrReceiverIdOrderByCreatedAt(currentUserId, currentUserId);
 
         for (ChatMessage message : allMyMessages) {
             if (message == null || message.getCreatedAt() == null) {
@@ -173,9 +178,11 @@ public class ChatMessageService {
             }
 
             String partnerId = null;
-            if (currentUserId.equals(message.getSenderId()) && partnerRole.equalsIgnoreCase(message.getReceiverRole())) {
+            if (currentUserId.equals(message.getSenderId())
+                    && partnerRole.equalsIgnoreCase(message.getReceiverRole())) {
                 partnerId = message.getReceiverId();
-            } else if (currentUserId.equals(message.getReceiverId()) && partnerRole.equalsIgnoreCase(message.getSenderRole())) {
+            } else if (currentUserId.equals(message.getReceiverId())
+                    && partnerRole.equalsIgnoreCase(message.getSenderRole())) {
                 partnerId = message.getSenderId();
             }
 
@@ -234,14 +241,18 @@ public class ChatMessageService {
         String sRole = message.getSenderRole();
         String rRole = message.getReceiverRole();
 
-        if ("ADMIN".equalsIgnoreCase(sRole) && "AGENT".equalsIgnoreCase(rRole)) return;
-        if ("AGENT".equalsIgnoreCase(sRole) && "ADMIN".equalsIgnoreCase(rRole)) return;
+        if ("ADMIN".equalsIgnoreCase(sRole) && "AGENT".equalsIgnoreCase(rRole))
+            return;
+        if ("AGENT".equalsIgnoreCase(sRole) && "ADMIN".equalsIgnoreCase(rRole))
+            return;
 
         if ("AGENT".equalsIgnoreCase(sRole) && "UTILISATEUR".equalsIgnoreCase(rRole)) {
-            if (isClientOfAgency(message.getReceiverId(), message.getSenderId())) return;
+            if (isClientOfAgency(message.getReceiverId(), message.getSenderId()))
+                return;
         }
         if ("UTILISATEUR".equalsIgnoreCase(sRole) && "AGENT".equalsIgnoreCase(rRole)) {
-            if (isClientOfAgency(message.getSenderId(), message.getReceiverId())) return;
+            if (isClientOfAgency(message.getSenderId(), message.getReceiverId()))
+                return;
         }
 
         throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Communication non autorisée.");
@@ -250,7 +261,8 @@ public class ChatMessageService {
     private boolean isClientOfAgency(String utilisateurId, String agenceId) {
         Optional<Utilisateur> userOpt = utilisateurRepository.findById(utilisateurId);
         Optional<Agence> agenceOpt = agenceRepository.findById(agenceId);
-        if (userOpt.isEmpty() || agenceOpt.isEmpty()) return false;
+        if (userOpt.isEmpty() || agenceOpt.isEmpty())
+            return false;
         String nomA = agenceOpt.get().getNomAgence();
         return contratReferenceRepository.findByCinOrderByDateFinContratDesc(userOpt.get().getCin()).stream()
                 .anyMatch(c -> nomA != null && nomA.equals(c.getNomAgence()));

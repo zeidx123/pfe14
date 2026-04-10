@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, useCallback, useRef } from 'react'
 
 import ChatPage from './ChatPage'
 import { Client } from '@stomp/stompjs'
@@ -96,59 +96,55 @@ export default function AgentPage() {
 
   useEffect(() => { loadAgence(); loadContrats(); loadUtilisateurs() }, [])
 
-  useEffect(() => {
-    const currentUserId = localStorage.getItem('userId')
-    const token = localStorage.getItem('token')
+  const currentMessagesRef = useRef([])
+  const currentUserId = localStorage.getItem('userId')
+  const token = localStorage.getItem('token')
 
+  const updateUnread = useCallback((data) => {
+    setUsersMessagesUnreadCount(getUnreadTotal(getUnreadStatsByPartner(data, currentUserId, ['UTILISATEUR'])))
+    setAdminMessagesUnreadCount(getUnreadTotal(getUnreadStatsByPartner(data, currentUserId, ['ADMIN'])))
+  }, [currentUserId])
+
+  const loadUnread = useCallback(async () => {
+    if (!currentUserId || !token) return
+    try {
+      const res = await fetch(`/api/chat/all-my-messages/${currentUserId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      if (!res.ok) return
+      const data = await res.json()
+      currentMessagesRef.current = Array.isArray(data) ? data : []
+      updateUnread(currentMessagesRef.current)
+    } catch (err) {
+      console.error('Error loading unread:', err)
+      setUsersMessagesUnreadCount(0)
+      setAdminMessagesUnreadCount(0)
+    }
+  }, [currentUserId, token, updateUnread])
+
+  useEffect(() => {
     if (!currentUserId || !token) {
       setUsersMessagesUnreadCount(0)
       setAdminMessagesUnreadCount(0)
       return
     }
 
-    let cancelled = false
-    let currentMessages = []
-
-    const updateUnread = (data) => {
-      setUsersMessagesUnreadCount(getUnreadTotal(getUnreadStatsByPartner(data, currentUserId, ['UTILISATEUR'])))
-      setAdminMessagesUnreadCount(getUnreadTotal(getUnreadStatsByPartner(data, currentUserId, ['ADMIN'])))
-    }
-
-    const loadUnread = async () => {
-      try {
-        const res = await fetch(`/api/chat/all-my-messages/${currentUserId}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        })
-
-        if (!res.ok) return
-
-        const data = await res.json()
-        if (cancelled) return
-
-        currentMessages = Array.isArray(data) ? data : []
-        updateUnread(currentMessages)
-      } catch {
-        if (!cancelled) {
-          setUsersMessagesUnreadCount(0)
-          setAdminMessagesUnreadCount(0)
-        }
-      }
-    }
-
     loadUnread()
+
+    let cancelled = false
 
     const client = new Client({
       webSocketFactory: () => new SockJS('/ws', null, { transports: ['websocket'] }),
       reconnectDelay: 5000,
       connectHeaders: { Authorization: `Bearer ${token}` },
       onConnect: () => {
-        client.subscribe(`/user/${currentUserId}/queue/messages`, (frame) => {
+        client.subscribe('/user/queue/messages', (frame) => {
           const incomingMsg = JSON.parse(frame.body);
           if (!cancelled) {
-            const exists = currentMessages.some(m => m.id === incomingMsg.id);
+            const exists = currentMessagesRef.current.some(m => String(m.id) === String(incomingMsg.id));
             if (!exists) {
-              currentMessages = [...currentMessages, incomingMsg];
-              updateUnread(currentMessages);
+              currentMessagesRef.current = [...currentMessagesRef.current, incomingMsg];
+              updateUnread(currentMessagesRef.current);
             }
           }
         });
@@ -160,7 +156,7 @@ export default function AgentPage() {
       cancelled = true
       client.deactivate()
     }
-  }, [])
+  }, [currentUserId, token, loadUnread, updateUnread])
 
   // ── Download handler ───────────────────────────────────────────────────────
   const handleDownloadFichier = (fichier, numeroContrat) => {
@@ -812,12 +808,12 @@ export default function AgentPage() {
           {!isLoading && agence && activeSection === 'utilisateurs' && renderUtilisateursSection()}
           {!isLoading && agence && activeSection === 'messages_utilisateurs' && (
             <div style={{ marginTop: '20px' }}>
-              <ChatPage key="users" targetRoleFilter={filterUtilisateur} />
+              <ChatPage key="users" targetRoleFilter={filterUtilisateur} onUnreadCountChange={() => loadUnread()} />
             </div>
           )}
           {!isLoading && agence && activeSection === 'messages_admin' && (
             <div style={{ marginTop: '20px' }}>
-              <ChatPage key="admin" targetRoleFilter={filterAdmin} />
+              <ChatPage key="admin" targetRoleFilter={filterAdmin} onUnreadCountChange={() => loadUnread()} />
             </div>
           )}
 
