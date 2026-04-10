@@ -175,6 +175,10 @@ export default function AdminPage() {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [chatUnreadCount, setChatUnreadCount] = useState(0)
+  const [isGestionOpen, setIsGestionOpen] = useState(false)
+  const [isConsultationOpen, setIsConsultationOpen] = useState(false)
+
+
 
   const [contratForm, setContratForm] = useState(emptyContratForm)
   const [editingContratId, setEditingContratId] = useState(null)
@@ -950,26 +954,116 @@ export default function AdminPage() {
         </div>
 
         <nav className="admin-side-nav" aria-label="Sections administration">
-          {adminSections.map((section) => (
-            <button
-              key={section.key}
-              type="button"
-              className={`admin-side-btn ${activeAdminSection === section.key ? 'is-active' : ''}`}
+          {/* Tableau de bord */}
+          <button
+            type="button"
+            className={`admin-side-btn ${activeAdminSection === 'dashboard' ? 'is-active' : ''}`}
+            onClick={() => {
+              setActiveAdminSection('dashboard')
+              setIsHamburgerOpen(false)
+              setIsGestionOpen(false)
+              setIsConsultationOpen(false)
+            }}
+          >
+            <span className="admin-side-icon">{getSectionIcon('dashboard')}</span>
+            <span className="admin-side-label">Tableau de bord</span>
+          </button>
+
+          {/* Groupe Gestion */}
+          <div className="admin-side-group">
+            <div
+              className={`admin-side-nav-toggle ${['agences', 'publications', 'documents'].includes(activeAdminSection) ? 'is-active' : ''} ${isGestionOpen ? 'is-open' : ''}`}
               onClick={() => {
-                setActiveAdminSection(section.key)
-                setIsHamburgerOpen(false)
+                setIsGestionOpen(!isGestionOpen)
+                setIsConsultationOpen(false)
               }}
-              aria-label={section.label}
-              title={section.label}
             >
-              <span className="admin-side-icon">{getSectionIcon(section.key)}</span>
-              <span className="admin-side-label">{section.label}</span>
-              {section.key === 'messages' && chatUnreadCount > 0 ? (
-                <span className="admin-side-badge">{chatUnreadCount > 9 ? '9+' : chatUnreadCount}</span>
-              ) : null}
-            </button>
-          ))}
+              <span>Gestion</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </div>
+
+            <div className={`admin-side-dropdown-list ${isGestionOpen ? 'is-open' : ''}`}>
+              {[
+                { key: 'agences', label: 'Agences' },
+                { key: 'publications', label: 'Publications' },
+                { key: 'documents', label: 'Documents' }
+              ].map(item => (
+                <button
+                  key={item.key}
+                  type="button"
+                  className={`admin-side-dropdown-item ${activeAdminSection === item.key ? 'is-active' : ''}`}
+                  onClick={() => {
+                    setActiveAdminSection(item.key)
+                    setIsHamburgerOpen(false)
+                  }}
+                >
+                  <span className="admin-side-icon">{getSectionIcon(item.key)}</span>
+                  <span>{item.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Groupe Consultations */}
+          <div className="admin-side-group">
+            <div
+              className={`admin-side-nav-toggle ${['contrats', 'utilisateurs'].includes(activeAdminSection) ? 'is-active' : ''} ${isConsultationOpen ? 'is-open' : ''}`}
+              onClick={() => {
+                setIsConsultationOpen(!isConsultationOpen)
+                setIsGestionOpen(false)
+              }}
+            >
+              <span>Consultations</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </div>
+
+            <div className={`admin-side-dropdown-list ${isConsultationOpen ? 'is-open' : ''}`}>
+              {[
+                { key: 'contrats', label: 'Contrats' },
+                { key: 'utilisateurs', label: 'Utilisateurs' }
+              ].map(item => (
+                <button
+                  key={item.key}
+                  type="button"
+                  className={`admin-side-dropdown-item ${activeAdminSection === item.key ? 'is-active' : ''}`}
+                  onClick={() => {
+                    setActiveAdminSection(item.key)
+                    setIsHamburgerOpen(false)
+                  }}
+                >
+                  <span className="admin-side-icon">{getSectionIcon(item.key)}</span>
+                  <span>{item.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Messages */}
+          <button
+            type="button"
+            className={`admin-side-btn ${activeAdminSection === 'messages' ? 'is-active' : ''}`}
+            onClick={() => {
+              setActiveAdminSection('messages')
+              setIsHamburgerOpen(false)
+              setIsGestionOpen(false)
+              setIsConsultationOpen(false)
+            }}
+            style={{ marginTop: '0.4rem' }}
+          >
+            <span className="admin-side-icon">{getSectionIcon('messages')}</span>
+            <span className="admin-side-label">Messages agence</span>
+            {chatUnreadCount > 0 && (
+              <span className="admin-side-badge">{chatUnreadCount > 9 ? '9+' : chatUnreadCount}</span>
+            )}
+          </button>
         </nav>
+
+
+
 
         <div className="admin-sidebar-bottom">
           <button
@@ -1016,23 +1110,78 @@ export default function AdminPage() {
 
           {isHamburgerOpen && (
             <div className="admin-menu-dropdown-mobile">
-              <div className="admin-menu-title">Sections</div>
-              {adminSections.map((section) => (
-                <button
-                  key={section.key}
-                  type="button"
-                  className={`admin-menu-item ${activeAdminSection === section.key ? 'is-active' : ''}`}
-                  onClick={() => {
-                    setActiveAdminSection(section.key)
-                    setIsHamburgerOpen(false)
-                  }}
-                >
-                  <span className="admin-menu-icon">{getSectionIcon(section.key)}</span>
-                  <span className="admin-menu-label">{section.label}</span>
-                </button>
-              ))}
+              <div className="admin-menu-title">Navigation principale</div>
+
+              <button
+                type="button"
+                className={`admin-menu-item ${activeAdminSection === 'dashboard' ? 'is-active' : ''}`}
+                onClick={() => {
+                  setActiveAdminSection('dashboard')
+                  setIsHamburgerOpen(false)
+                }}
+              >
+                <span className="admin-menu-icon">{getSectionIcon('dashboard')}</span>
+                <span className="admin-menu-label">Tableau de bord</span>
+              </button>
+
+              <div className="admin-menu-title">Gestions</div>
+              {['agences', 'publications', 'documents'].map(key => {
+                const section = adminSections.find(s => s.key === key)
+                if (!section) return null
+                return (
+                  <button
+                    key={section.key}
+                    type="button"
+                    className={`admin-menu-item ${activeAdminSection === section.key ? 'is-active' : ''}`}
+                    onClick={() => {
+                      setActiveAdminSection(section.key)
+                      setIsHamburgerOpen(false)
+                    }}
+                  >
+                    <span className="admin-menu-icon">{getSectionIcon(section.key)}</span>
+                    <span className="admin-menu-label">{section.label}</span>
+                  </button>
+                )
+              })}
+
+              <div className="admin-menu-title">Consultations</div>
+              {['contrats', 'utilisateurs'].map(key => {
+                const section = adminSections.find(s => s.key === key)
+                if (!section) return null
+                return (
+                  <button
+                    key={section.key}
+                    type="button"
+                    className={`admin-menu-item ${activeAdminSection === section.key ? 'is-active' : ''}`}
+                    onClick={() => {
+                      setActiveAdminSection(section.key)
+                      setIsHamburgerOpen(false)
+                    }}
+                  >
+                    <span className="admin-menu-icon">{getSectionIcon(section.key)}</span>
+                    <span className="admin-menu-label">{section.label}</span>
+                  </button>
+                )
+              })}
+
+              <div className="admin-menu-title">Communication</div>
+              <button
+                type="button"
+                className={`admin-menu-item ${activeAdminSection === 'messages' ? 'is-active' : ''}`}
+                onClick={() => {
+                  setActiveAdminSection('messages')
+                  setIsHamburgerOpen(false)
+                }}
+              >
+                <span className="admin-menu-icon">{getSectionIcon('messages')}</span>
+                <span className="admin-menu-label">Messages agence</span>
+                {chatUnreadCount > 0 && (
+                  <span className="admin-menu-badge">{chatUnreadCount}</span>
+                )}
+              </button>
             </div>
           )}
+
         </header>
 
         <div className="admin-content">
