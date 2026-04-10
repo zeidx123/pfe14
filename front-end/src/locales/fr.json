@@ -1,0 +1,141 @@
+{
+    "nav": {
+        "home": "Accueil",
+        "services": {
+            "title": "Nos Services",
+            "auto": "Ma voiture",
+            "home": "Mon habitation",
+            "travel": "Mon voyage",
+            "life": "Ma prévoyance"
+        },
+        "assistance": "Assistance",
+        "agences": "Agences",
+        "contact": "Contact",
+        "bulletin": "Bulletin",
+        "messagerie": "Messagerie",
+        "login": "Login",
+        "register": "S'inscrire",
+        "logout": "Déconnecter",
+        "profile": "Mon profil",
+        "admin": "Espace Admin",
+        "agent": "Espace Agent"
+    },
+    "auth": {
+        "login": {
+            "title": "Connexion",
+            "subtitle": "Accédez à votre espace AssurGo",
+            "email": "Email",
+            "password": "Mot de passe",
+            "submit": "Chargement...",
+            "button": "Se connecter",
+            "noAccount": "Pas encore de compte ?",
+            "register": "S'inscrire ici",
+            "success": "Connexion réussie",
+            "error": "Erreur d'identifiants"
+        },
+        "register": {
+            "title": "Créer un compte",
+            "subtitle": "Rejoignez AssurGo Assurances",
+            "nom": "Nom complet",
+            "email": "Email",
+            "password": "Mot de passe",
+            "submit": "Création...",
+            "button": "S'inscrire",
+            "hasAccount": "Déjà un compte ?",
+            "login": "Se connecter",
+            "success": "Compte créé avec succès",
+            "error": "Erreur lors de l'inscription"
+        }
+    },
+    "footer": {
+        "address1": "9 rue de Palestine cité des affaires",
+        "address2": "Kheireddine 2060 La Goulette",
+        "discover": "Découvrir",
+        "faq": "FAQs",
+        "downloads": "Téléchargements",
+        "lexique": "Lexique",
+        "partners": "Accès partenaires",
+        "news": "Actualités",
+        "sitemap": "Plan du site",
+        "iaa": "IAA",
+        "rights": "Tous droits réservés"
+    },
+    "common": {
+        "brand": "AssurGo Assurances",
+        "loading": "Chargement...",
+        "error": "Une erreur est survenue.",
+        "discover": "Découvrir",
+        "readMore": "Lire la suite"
+    },
+    "home": {
+        "hero": {
+            "title": "AssurGo Assurances",
+            "subtitle": "Expertise multidisciplinaire pour vos assurances",
+            "desc": "Une assurance adaptée à chaque détail pour protéger votre famille, votre logement et votre mobilité."
+        },
+        "products": {
+            "kicker": "Nos produits",
+            "title": "Préparer sereinement votre avenir",
+            "items": {
+                "habitation": {
+                    "title": "Mon habitation",
+                    "desc": "Protection du logement, incendie, vol et dégâts des eaux."
+                },
+                "voyage": {
+                    "title": "Mon voyage",
+                    "desc": "Assistance avant et pendant le voyage en Tunisie et à l’étranger."
+                },
+                "prevoyance": {
+                    "title": "Ma prévoyance",
+                    "desc": "Solutions pour protéger votre famille et préparer l’avenir."
+                },
+                "voiture": {
+                    "title": "Ma voiture",
+                    "desc": "Formules auto adaptées, assistance et prise en charge rapide."
+                }
+            }
+        },
+        "news": {
+            "kicker": "Découvrez les nouveautés",
+            "title": "Explorez les tendances et solutions assurances",
+            "tag": "Actualité",
+            "cardTitle": "Un service d’assistance humaine disponible 24/7 partout en Tunisie",
+            "cardDesc": "Notre équipe vous accompagne en agence et à distance pour simplifier la déclaration et le suivi de votre dossier.",
+            "link": "Découvrir l’actualité"
+        },
+        "demarches": {
+            "kicker": "Démarches",
+            "title": "AssurGo est à votre écoute pour satisfaire vos besoins",
+            "items": {
+                "auto": {
+                    "title": "Sinistre automobile",
+                    "desc": "Déclarez votre accident en ligne et suivez votre dossier étape par étape."
+                },
+                "hab": {
+                    "title": "Sinistre habitation",
+                    "desc": "En cas de vol ou dommage, envoyez vos justificatifs de manière sécurisée."
+                },
+                "constat": {
+                    "title": "Constat amiable",
+                    "desc": "Téléchargez le formulaire et recevez l’accompagnement nécessaire."
+                }
+            }
+        },
+        "stats": {
+            "kicker": "AssurGo en chiffres",
+            "title": "Pourquoi choisir AssurGo Assurances ?",
+            "desc": "Depuis sa création, AssurGo accompagne ses clients avec proximité, transparence et solutions innovantes pour répondre à l’évolution de leurs besoins.",
+            "items": {
+                "exp": "Années d’expérience",
+                "agences": "Agences",
+                "collab": "Collaborateurs",
+                "assist": "Service assistance"
+            }
+        },
+        "footerTop": {
+            "pro": "Équipe professionnelle",
+            "innov": "Solutions innovantes",
+            "assist": "24/7 Assistance"
+        }
+    }
+}

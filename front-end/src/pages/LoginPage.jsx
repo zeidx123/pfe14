@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 const normalizeRole = (role) => {
   if (!role) {
@@ -30,6 +31,7 @@ const decodeRoleFromToken = (token) => {
 }
 
 export default function LoginPage() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [formData, setFormData] = useState({ email: '', password: '' })
   const [error, setError] = useState('')
@@ -123,11 +125,11 @@ export default function LoginPage() {
   return (
     <main className="auth-page">
       <section className="auth-card">
-        <h1>Se connecter</h1>
-        <p>Accédez à votre espace assuré pour suivre vos dossiers.</p>
+        <h1>{t('auth.login.title')}</h1>
+        <p>{t('auth.login.subtitle')}</p>
         <form className="auth-form" onSubmit={handleSubmit}>
           <label>
-            Email
+            {t('auth.login.email')}
             <input
               type="email"
               name="email"
@@ -137,7 +139,7 @@ export default function LoginPage() {
             />
           </label>
           <label>
-            Mot de passe
+            {t('auth.login.password')}
             <input
               type="password"
               name="password"
@@ -148,11 +150,11 @@ export default function LoginPage() {
           </label>
           {error ? <p className="auth-switch">{error}</p> : null}
           <button type="submit" className="primary auth-submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Connexion...' : 'Se connecter'}
+            {isSubmitting ? t('auth.login.submit') : t('auth.login.button')}
           </button>
         </form>
         <p className="auth-switch">
-          Pas encore de compte ? <Link to="/creer-compte">Créer un compte</Link>
+          {t('auth.login.noAccount')} <Link to="/creer-compte">{t('auth.login.register')}</Link>
         </p>
       </section>
     </main>

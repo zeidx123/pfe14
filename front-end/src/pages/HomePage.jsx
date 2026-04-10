@@ -1,73 +1,58 @@
 import { Link } from 'react-router-dom'
-
-const products = [
-  {
-    title: 'Mon habitation',
-    desc: 'Protection du logement, incendie, vol et dégâts des eaux.',
-    icon: '🏠'
-  },
-  {
-    title: 'Mon voyage',
-    desc: 'Assistance avant et pendant le voyage en Tunisie et à l’étranger.',
-    icon: '✈️'
-  },
-  {
-    title: 'Ma prévoyance',
-    desc: 'Solutions pour protéger votre famille et préparer l’avenir.',
-    icon: '💚'
-  },
-  {
-    title: 'Ma voiture',
-    desc: 'Formules auto adaptées, assistance et prise en charge rapide.',
-    icon: '🚗'
-  }
-]
-
-const demarches = [
-  {
-    title: 'Sinistre automobile',
-    desc: 'Déclarez votre accident en ligne et suivez votre dossier étape par étape.',
-    img: 'https://images.unsplash.com/photo-1486006920555-c77dcf18193c?auto=format&fit=crop&w=1000&q=80'
-  },
-  {
-    title: 'Sinistre habitation',
-    desc: 'En cas de vol ou dommage, envoyez vos justificatifs de manière sécurisée.',
-    img: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1000&q=80'
-  },
-  {
-    title: 'Constat amiable',
-    desc: 'Téléchargez le formulaire et recevez l’accompagnement nécessaire.',
-    img: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=1000&q=80'
-  }
-]
-
-const chiffres = [
-  { value: '65', label: 'Années d’expérience' },
-  { value: '160', label: 'Agences' },
-  { value: '500+', label: 'Collaborateurs' },
-  { value: '24/7', label: 'Service assistance' }
-]
+import { useTranslation } from 'react-i18next'
 
 export default function HomePage() {
+  const { t } = useTranslation()
+
+  const products = [
+    { title: t('home.products.items.habitation.title'), desc: t('home.products.items.habitation.desc'), icon: '🏠' },
+    { title: t('home.products.items.voyage.title'), desc: t('home.products.items.voyage.desc'), icon: '✈️' },
+    { title: t('home.products.items.prevoyance.title'), desc: t('home.products.items.prevoyance.desc'), icon: '💚' },
+    { title: t('home.products.items.voiture.title'), desc: t('home.products.items.voiture.desc'), icon: '🚗' }
+  ]
+
+  const demarches = [
+    {
+      title: t('home.demarches.items.auto.title'),
+      desc: t('home.demarches.items.auto.desc'),
+      img: 'https://images.unsplash.com/photo-1486006920555-c77dcf18193c?auto=format&fit=crop&w=1000&q=80'
+    },
+    {
+      title: t('home.demarches.items.hab.title'),
+      desc: t('home.demarches.items.hab.desc'),
+      img: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1000&q=80'
+    },
+    {
+      title: t('home.demarches.items.constat.title'),
+      desc: t('home.demarches.items.constat.desc'),
+      img: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=1000&q=80'
+    }
+  ]
+
+  const chiffres = [
+    { value: '65', label: t('home.stats.items.exp') },
+    { value: '160', label: t('home.stats.items.agences') },
+    { value: '500+', label: t('home.stats.items.collab') },
+    { value: '24/7', label: t('home.stats.items.assist') }
+  ]
+
   return (
     <main>
       <section className="hero">
         <div className="hero-image" role="img" aria-label="Bannière assurance" />
         <div className="container hero-content">
           <article className="hero-card-main">
-            <h1>AssurGo Assurances</h1>
-            <h2>Expertise multidisciplinaire pour vos assurances</h2>
-            <p>
-              Une assurance adaptée à chaque détail pour protéger votre famille, votre logement et votre mobilité.
-            </p>
-            <button className="primary">Découvrir</button>
+            <h1>{t('home.hero.title')}</h1>
+            <h2>{t('home.hero.subtitle')}</h2>
+            <p>{t('home.hero.desc')}</p>
+            <button className="primary">{t('common.discover')}</button>
           </article>
         </div>
       </section>
 
       <section className="section container products-section">
-        <p className="section-kicker">Nos produits</p>
-        <h3 className="section-title">Préparer sereinement votre avenir</h3>
+        <p className="section-kicker">{t('home.products.kicker')}</p>
+        <h3 className="section-title">{t('home.products.title')}</h3>
         <div className="product-grid">
           {products.map((item) => (
             <article className="product-card" key={item.title}>
@@ -81,8 +66,8 @@ export default function HomePage() {
 
       <section className="section section-news">
         <div className="container">
-          <p className="section-kicker">Découvrez les nouveautés</p>
-          <h3 className="section-title big">Explorez les tendances et solutions assurances</h3>
+          <p className="section-kicker">{t('home.news.kicker')}</p>
+          <h3 className="section-title big">{t('home.news.title')}</h3>
 
           <div className="news-block">
             <img
@@ -90,21 +75,18 @@ export default function HomePage() {
               alt="Nouvelle offre assurance"
             />
             <div>
-              <p className="news-tag">Actualité</p>
-              <h4>Un service d’assistance humaine disponible 24/7 partout en Tunisie</h4>
-              <p>
-                Notre équipe vous accompagne en agence et à distance pour simplifier la déclaration et le suivi
-                de votre dossier.
-              </p>
-              <Link to="/">Découvrir l’actualité</Link>
+              <p className="news-tag">{t('home.news.tag')}</p>
+              <h4>{t('home.news.cardTitle')}</h4>
+              <p>{t('home.news.cardDesc')}</p>
+              <Link to="/">{t('home.news.link')}</Link>
             </div>
           </div>
         </div>
       </section>
 
       <section className="section container">
-        <p className="section-kicker">Démarches</p>
-        <h3 className="section-title">AssurGo est à votre écoute pour satisfaire vos besoins</h3>
+        <p className="section-kicker">{t('home.demarches.kicker')}</p>
+        <h3 className="section-title">{t('home.demarches.title')}</h3>
         <div className="demarche-grid">
           {demarches.map((item) => (
             <article className="demarche-card" key={item.title}>
@@ -121,13 +103,10 @@ export default function HomePage() {
       <section className="section section-alt stats-section">
         <div className="container stats-layout">
           <div>
-            <p className="section-kicker">AssurGo en chiffres</p>
-            <h3 className="section-title left">Pourquoi choisir AssurGo Assurances ?</h3>
-            <p className="text-muted">
-              Depuis sa création, AssurGo accompagne ses clients avec proximité, transparence et solutions
-              innovantes pour répondre à l’évolution de leurs besoins.
-            </p>
-            <button className="primary">Lire la suite</button>
+            <p className="section-kicker">{t('home.stats.kicker')}</p>
+            <h3 className="section-title left">{t('home.stats.title')}</h3>
+            <p className="text-muted">{t('home.stats.desc')}</p>
+            <button className="primary">{t('common.readMore')}</button>
           </div>
           <div className="stats-grid-2">
             {chiffres.map((item) => (
@@ -143,13 +122,13 @@ export default function HomePage() {
       <section className="footer-top">
         <div className="container footer-top-grid">
           <div>
-            <h4>Équipe professionnelle</h4>
+            <h4>{t('home.footerTop.pro')}</h4>
           </div>
           <div>
-            <h4>Solutions innovantes</h4>
+            <h4>{t('home.footerTop.innov')}</h4>
           </div>
           <div>
-            <h4>24/7 Assistance</h4>
+            <h4>{t('home.footerTop.assist')}</h4>
           </div>
         </div>
       </section>

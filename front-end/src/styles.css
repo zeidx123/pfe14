@@ -71,6 +71,34 @@ a {
   gap: 0.45rem;
 }
 
+.lang-switcher {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.lang-switcher button {
+  background: none;
+  border: 1px solid #dfe5ec;
+  padding: 4px 6px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: #8a92a4;
+  transition: all 0.2s;
+}
+
+.lang-switcher button.active {
+  background: #00cccc;
+  color: white;
+  border-color: #00cccc;
+}
+
+.lang-switcher button:hover:not(.active) {
+  background: #f0f3f6;
+  border-color: #00cccc;
+}
+
 .nav-profile-dropdown-wrap {
   position: relative;
 }

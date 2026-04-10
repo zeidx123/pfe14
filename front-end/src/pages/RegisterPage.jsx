@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { validatePhoneNumberOrEmpty } from '../utils/phoneNumberValidator'
 
 export default function RegisterPage() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
     nom: '',
@@ -18,12 +20,12 @@ export default function RegisterPage() {
   const handleChange = (event) => {
     const { name, value } = event.target
     let processedValue = value
-    
+
     // Sanitize CIN: digits only, max 8 characters
     if (name === 'cin') {
       processedValue = value.replace(/\D/g, '').slice(0, 8)
     }
-    
+
     setFormData((prev) => ({ ...prev, [name]: processedValue }))
   }
 
@@ -78,22 +80,22 @@ export default function RegisterPage() {
   return (
     <main className="auth-page">
       <section className="auth-card">
-        <h1>Créer un compte</h1>
-        <p>Inscrivez-vous pour déclarer un sinistre en ligne.</p>
+        <h1>{t('auth.register.title')}</h1>
+        <p>{t('auth.register.subtitle')}</p>
         <form className="auth-form" onSubmit={handleSubmit}>
           <label>
-            Nom *
+            {t('auth.register.nom')} *
             <input
               type="text"
               name="nom"
               value={formData.nom}
               onChange={handleChange}
-              placeholder="Votre nom"
+              placeholder={t('auth.register.nom')}
               required
             />
           </label>
           <label>
-            Email *
+            {t('auth.register.email')} *
             <input
               type="email"
               name="email"
@@ -104,7 +106,7 @@ export default function RegisterPage() {
             />
           </label>
           <label>
-            Mot de passe *
+            {t('auth.register.password')} *
             <input
               type="password"
               name="password"
@@ -115,7 +117,7 @@ export default function RegisterPage() {
             />
           </label>
           <label>
-            Téléphone
+            {t('telephone') || 'Téléphone'}
             <input
               type="text"
               name="telephone"
@@ -142,11 +144,11 @@ export default function RegisterPage() {
           {error ? <p className="auth-switch">{error}</p> : null}
           {success ? <p className="auth-switch">{success}</p> : null}
           <button type="submit" className="primary auth-submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Création...' : 'Créer un compte'}
+            {isSubmitting ? t('auth.register.submit') : t('auth.register.button')}
           </button>
         </form>
         <p className="auth-switch">
-          Vous avez déjà un compte ? <Link to="/se-connecter">Se connecter</Link>
+          {t('auth.register.hasAccount')} <Link to="/se-connecter">{t('auth.register.login')}</Link>
         </p>
       </section>
     </main>

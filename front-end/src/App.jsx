@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { Client } from '@stomp/stompjs'
 import SockJS from 'sockjs-client'
+import { useTranslation } from 'react-i18next'
 import logo from './assets/assurgo-logo_Version2.svg'
 import AdminPage from './pages/AdminPage'
 import AgentPage from './pages/AgentPage'
@@ -24,18 +25,18 @@ import ChatWidget from './components/ChatWidget'
 import { getUnreadStatsByPartner, getUnreadTotal } from './utils/chatUnread'
 
 const publicLinks = [
-  { label: 'Assistance', to: '/assistance' },
-  { label: 'Agences', to: '/agences' },
-  { label: 'Contact', to: '/contact' },
-  { label: 'Bulletin', to: '/bulletin' },
-  { label: 'Messagerie', to: '/messagerie', private: true }
+  { key: 'nav.assistance', to: '/assistance' },
+  { key: 'nav.agences', to: '/agences' },
+  { key: 'nav.contact', to: '/contact' },
+  { key: 'nav.bulletin', to: '/bulletin' },
+  { key: 'nav.messagerie', to: '/messagerie', private: true }
 ]
 
 const privateLinks = [
-  { label: 'Ma voiture', to: '/ma-voiture' },
-  { label: 'Mon habitation', to: '/mon-habitation' },
-  { label: 'Mon voyage', to: '/mon-voyage' },
-  { label: 'Ma prévoyance', to: '/ma-prevoyance' }
+  { label: 'Ma voiture', key: 'nav.services.auto', to: '/ma-voiture' },
+  { label: 'Mon habitation', key: 'nav.services.home', to: '/mon-habitation' },
+  { label: 'Mon voyage', key: 'nav.services.travel', to: '/mon-voyage' },
+  { label: 'Ma prévoyance', key: 'nav.services.life', to: '/ma-prevoyance' }
 ]
 
 const normalizeRole = (role) => {
@@ -74,6 +75,7 @@ const formatNavRelativeTime = (value) => {
 }
 
 export default function App() {
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
   const token = localStorage.getItem('token')
@@ -339,7 +341,7 @@ export default function App() {
                   title={!hasContract ? 'Vous n\'avez pas de contrat actif pour ce service.' : ''}
                   disabled={!hasContract}
                 >
-                  {item.label}
+                  {t(item.key)}
                 </button>
               </Link>
             )
@@ -352,16 +354,26 @@ export default function App() {
           <div className="container nav-wrap">
             <Link className="brand" to="/">
               <img src={logo} alt="AssurGo" className="brand-logo" />
-              <span>AssurGo Assurances</span>
+              <span>{t('common.brand')}</span>
             </Link>
             <nav className="nav-links" style={{ justifyContent: 'flex-end', paddingRight: '1rem' }}>
               {publicLinks.filter(l => !l.private || isAuthenticated).map((item) => (
-                <Link to={item.to} key={item.label}>
-                  {item.label}
+                <Link to={item.to} key={item.key}>
+                  {t(item.key)}
                 </Link>
               ))}
             </nav>
             <div className="nav-actions">
+              <div className="lang-switcher">
+                <button
+                  className={i18n.language === 'fr' ? 'active' : ''}
+                  onClick={() => i18n.changeLanguage('fr')}
+                >FR</button>
+                <button
+                  className={i18n.language === 'en' ? 'active' : ''}
+                  onClick={() => i18n.changeLanguage('en')}
+                >EN</button>
+              </div>
               {isAuthenticated && userRole !== 'ADMIN' && userRole !== 'AGENT' ? (
                 <button
                   className="nav-messenger-btn"
@@ -392,14 +404,14 @@ export default function App() {
                         className="nav-dropdown-item"
                         onClick={() => setIsProfileDropdownOpen(false)}
                       >
-                        Mon profil
+                        {t('nav.profile')}
                       </Link>
                       <hr className="nav-dropdown-divider" />
                       <button
                         className="nav-dropdown-item nav-dropdown-logout"
                         onClick={() => { setIsProfileDropdownOpen(false); handleLogout() }}
                       >
-                        Déconnecter
+                        {t('nav.logout')}
                       </button>
                     </div>
                   )}
@@ -407,10 +419,10 @@ export default function App() {
               ) : (
                 <>
                   <Link to="/se-connecter" className="nav-btn secondary-btn">
-                    Login
+                    {t('nav.login')}
                   </Link>
                   <Link to="/creer-compte" className="nav-btn primary-btn">
-                    S'inscrire
+                    {t('nav.register')}
                   </Link>
                 </>
               )}
@@ -514,8 +526,8 @@ export default function App() {
       {!isAdminRoute && !isAgentRoute ? (
         <footer className="footer">
           <div className="container footer-wrap">
-            <p>© 2026 AssurGo Assurances</p>
-            <p>Tous droits réservés</p>
+            <p>© 2026 AssurGo {t('common.brand')}</p>
+            <p>{t('footer.rights')}</p>
           </div>
         </footer>
       ) : null}

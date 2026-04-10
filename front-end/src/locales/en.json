@@ -1,0 +1,141 @@
+{
+    "nav": {
+        "home": "Home",
+        "services": {
+            "title": "Our Services",
+            "auto": "My car",
+            "home": "My home",
+            "travel": "My travel",
+            "life": "My life insurance"
+        },
+        "assistance": "Assistance",
+        "agences": "Agencies",
+        "contact": "Contact",
+        "bulletin": "Bulletin",
+        "messagerie": "Messaging",
+        "login": "Login",
+        "register": "Sign up",
+        "logout": "Logout",
+        "profile": "My profile",
+        "admin": "Admin Space",
+        "agent": "Agent Space"
+    },
+    "auth": {
+        "login": {
+            "title": "Login",
+            "subtitle": "Access your AssurGo space",
+            "email": "Email",
+            "password": "Password",
+            "submit": "Loading...",
+            "button": "Login",
+            "noAccount": "Don't have an account?",
+            "register": "Register here",
+            "success": "Login successful",
+            "error": "Invalid credentials"
+        },
+        "register": {
+            "title": "Create an account",
+            "subtitle": "Join AssurGo Insurance",
+            "nom": "Full name",
+            "email": "Email",
+            "password": "Password",
+            "submit": "Creating...",
+            "button": "Register",
+            "hasAccount": "Already have an account?",
+            "login": "Login",
+            "success": "Account created successfully",
+            "error": "Error during registration"
+        }
+    },
+    "footer": {
+        "address1": "9 Palestine Street, Business District",
+        "address2": "Kheireddine 2060 La Goulette",
+        "discover": "Discover",
+        "faq": "FAQs",
+        "downloads": "Downloads",
+        "lexique": "Glossary",
+        "partners": "Partners Access",
+        "news": "News",
+        "sitemap": "Sitemap",
+        "iaa": "IAA",
+        "rights": "All rights reserved"
+    },
+    "common": {
+        "brand": "AssurGo Assurances",
+        "loading": "Loading...",
+        "error": "An error occurred.",
+        "discover": "Discover",
+        "readMore": "Read more"
+    },
+    "home": {
+        "hero": {
+            "title": "AssurGo Insurance",
+            "subtitle": "Multidisciplinary expertise for your insurance",
+            "desc": "Insurance adapted to every detail to protect your family, your home and your mobility."
+        },
+        "products": {
+            "kicker": "Our products",
+            "title": "Peacefully prepare your future",
+            "items": {
+                "habitation": {
+                    "title": "My home",
+                    "desc": "Home protection, fire, theft and water damage."
+                },
+                "voyage": {
+                    "title": "My travel",
+                    "desc": "Assistance before and during travel in Tunisia and abroad."
+                },
+                "prevoyance": {
+                    "title": "My assets",
+                    "desc": "Solutions to protect your family and prepare for the future."
+                },
+                "voiture": {
+                    "title": "My car",
+                    "desc": "Adapted auto formulas, assistance and rapid handling."
+                }
+            }
+        },
+        "news": {
+            "kicker": "Discover the news",
+            "title": "Explore trends and insurance solutions",
+            "tag": "News",
+            "cardTitle": "Human assistance service available 24/7 throughout Tunisia",
+            "cardDesc": "Our team accompanies you in agency and remotely to simplify the declaration and follow-up of your file.",
+            "link": "Discover the news"
+        },
+        "demarches": {
+            "kicker": "Procedures",
+            "title": "AssurGo is at your service to satisfy your needs",
+            "items": {
+                "auto": {
+                    "title": "Car accident",
+                    "desc": "Declare your accident online and follow your file step by step."
+                },
+                "hab": {
+                    "title": "Home claim",
+                    "desc": "In case of theft or damage, send your documents securely."
+                },
+                "constat": {
+                    "title": "Friendly report",
+                    "desc": "Download the form and receive the necessary support."
+                }
+            }
+        },
+        "stats": {
+            "kicker": "AssurGo in numbers",
+            "title": "Why choose AssurGo Insurance?",
+            "desc": "Since its creation, AssurGo accompanies its clients with proximity, transparency and innovative solutions to meet their changing needs.",
+            "items": {
+                "exp": "Years of experience",
+                "agences": "Agencies",
+                "collab": "Staff",
+                "assist": "Assistance service"
+            }
+        },
+        "footerTop": {
+            "pro": "Professional team",
+            "innov": "Innovative solutions",
+            "assist": "24/7 Assistance"
+        }
+    }
+}
